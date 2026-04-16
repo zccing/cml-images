@@ -1,0 +1,30 @@
+# i3 config file for WinBox in CML
+
+# Disable window title bars
+for_window [class=".*"] border pixel 0
+
+# Start in fullscreen mode
+for_window [class=".*"] fullscreen enable
+
+# Disable focus follows mouse
+focus_follows_mouse no
+
+# Set mod key (not really used in this setup)
+set $mod Mod4
+
+# Font for window titles (minimal)
+font pango:DejaVu Sans Mono 8
+
+# No gaps
+gaps inner 0
+gaps outer 0
+
+
+exec --no-startup-id xsetroot -solid "#000000"
+
+bindsym $mod+Return exec i3-sensible-terminal
+bindsym $mod+Shift+e exit
+
+bar {
+    mode invisible
+}

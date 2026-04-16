@@ -1,0 +1,96 @@
+id: winbox
+boot:
+  timeout: 30
+  completed:
+    - READY
+  uses_regex: false
+sim:
+  linux_native:
+    libvirt_domain_driver: docker
+    driver: ubuntu
+    ram: 2048
+    cpus: 1
+    cpu_limit: 100
+    video:
+      memory: 1
+    enable_rng: true
+    enable_tpm: false
+general:
+  nature: host
+  description: MikroTik WinBox (Docker)
+  read_only: false
+configuration:
+  generator:
+    driver: null
+  provisioning:
+    files:
+      - editable: false
+        name: config.json
+        content: |-
+          {
+            "docker": {
+              "image": "winbox:4.0.1-cml",
+              "mounts": [
+                "type=bind,source=cfg/boot.sh,target=/boot.sh"
+              ]
+            },
+            "shell": "/bin/sh",
+            "day0cmd": ["/bin/sh", "/boot.sh"],
+            "busybox": true,
+            "vnc": {
+              "width": 1920,
+              "height": 1080,
+              "depth": 24
+            }
+          }
+      - editable: true
+        name: boot.sh
+        content: |-
+          # insert commands here, e.g. a static IP address
+          ip address add dev eth0 10.0.0.1/24
+          ip link set dev eth0 up
+          exit 0
+      - editable: true
+        name: environment
+        content: |-
+          # 需要连接的主机IP地址
+          # WINBOX_TARGET=
+          # 用户名
+          # WINBOX_USER=admin
+          # 密码
+          # WINBOX_PASS=
+          # 工作空间，默认不需要设置
+          # WINBOX_WORKSPACE=
+    media_type: raw
+    volume_name: cfg
+device:
+  interfaces:
+    serial_ports: 2
+    physical:
+      - eth0
+      - eth1
+      - eth2
+      - eth3
+    has_loopback_zero: false
+    default_count: 1
+ui:
+  label_prefix: winbox-
+  icon: host
+  label: WinBox
+  visible: true
+  group: Others
+  description: MikroTik WinBox v4.0.1
+inherited:
+  image:
+    ram: true
+    cpus: false
+    data_volume: false
+    boot_disk_size: false
+    cpu_limit: false
+  node:
+    ram: true
+    cpus: false
+    data_volume: false
+    boot_disk_size: false
+    cpu_limit: false
+schema_version: 0.0.1
