@@ -1,0 +1,30 @@
+name: Node definition schema check
+
+on:
+  push:
+    paths:
+      - 'node-definitions/**/*.yaml'
+      - '!node-definitions/**/*-Topology.yaml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'node-definitions/**/*.yaml'
+      - '!node-definitions/**/*-Topology.yaml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validations of node definitions
+        uses: thiagodnf/yaml-schema-checker@v0.0.12
+        with:
+          jsonSchemaFile: validation_schemas/node_definition.json
+          yamlFiles: |
+            node-definitions/**/!(*-Topology).yaml
